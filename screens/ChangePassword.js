@@ -1,9 +1,12 @@
 import React from 'react'
-import { Alert, Button, Text, TextInput, View } from 'react-native'
+import { Alert, StyleSheet, View } from 'react-native'
 import AsyncStorage from '@react-native-community/async-storage'
 
 import basicUserApi from '../api/basicUserApi'
 import { AuthContext } from '../context/auth'
+
+import AppTextInput from '../components/AppTextInput'
+import AppButton from '../components/AppButton'
 
 const ChangePasswordScreen = ({ navigation }) => {
   const { logout } = React.useContext(AuthContext)
@@ -50,8 +53,8 @@ const ChangePasswordScreen = ({ navigation }) => {
   }
 
   return (
-    <View>
-      <TextInput
+    <View style={styles.container}>
+      <AppTextInput
         onChangeText={text => dispatch({ type: 'SET_OLDPW', oldpw: text })}
         placeholder='old password'
         value={passwords.oldpw}
@@ -59,7 +62,7 @@ const ChangePasswordScreen = ({ navigation }) => {
         secureTextEntry={true}
         disabled={isLoading}
       />
-      <TextInput
+      <AppTextInput
         onChangeText={text => dispatch({ type: 'SET_NEWPW', newpw: text })}
         placeholder='new password'
         value={passwords.newpw}
@@ -67,7 +70,7 @@ const ChangePasswordScreen = ({ navigation }) => {
         secureTextEntry={true}
         disabled={isLoading}
       />
-      <TextInput
+      <AppTextInput
         onChangeText={text => dispatch({ type: 'SET_AGAIN', again: text })}
         placeholder='repeat new password'
         value={passwords.again}
@@ -75,10 +78,23 @@ const ChangePasswordScreen = ({ navigation }) => {
         secureTextEntry={true}
         disabled={isLoading}
       />
-      <Button onPress={handleChangePassword} title="Change password" />
-      <Button onPress={() => navigation.goBack()} title="Cancel" />
+      <View style={styles.controls}>
+        <AppButton color='gray' onPress={() => navigation.goBack()} title="Cancel" />
+        <AppButton onPress={handleChangePassword} title="Change password" />
+      </View>
     </View>
   )
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'flex-start',
+  },
+  controls: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+})
 
 export default ChangePasswordScreen
