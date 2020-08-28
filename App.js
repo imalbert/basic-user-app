@@ -56,16 +56,17 @@ export default function App() {
 
         try {
           const res = await fetch(`http://192.168.1.158:18999/auth/login`, options)
-          const accessToken = res.url.split(`users?token=`)[1]
           const result = await res.json()
-          console.log(result)
+
           if (res.status === 401) {
             Alert.alert('Oops', result, [{ text: 'OK' }])
+          } else {
+            const accessToken = res.url.split(`users?token=`)[1]
+            dispatch({ type: 'LOGIN', accessToken });
+            // TODO: save to asyncstorage
           }
-          dispatch({ type: 'LOGIN', accessToken });
-          // TODO: save to asyncstorage
         } catch (e) {
-          // TODO: alert error
+          Alert.alert(e.name, e.message, [{ text: 'OK' }])
         }
       },
       logout: () => dispatch({ type: 'LOGOUT' }),
