@@ -5,6 +5,7 @@ import Constants from 'expo-constants'
 
 import React, { useReducer } from 'react'
 import { StyleSheet, Alert, View } from 'react-native'
+import AsyncStorage from '@react-native-community/async-storage'
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 
@@ -26,17 +27,23 @@ export default function App() {
             ...prevState,
             isLoggedOut: false,
             accessToken: action.accessToken,
-          };
+          }
         case 'LOGOUT':
           return {
             ...prevState,
             isLoggedOut: true,
             accessToken: null,
-          };
+          }
+        case 'SET_TOKEN':
+          return {
+            ...prevState,
+            accessToken: action.accessToken,
+            isLoading: false,
+          }
       }
     },
     {
-      isLoading: false,
+      isLoading: true,
       isLoggedOut: false,
       accessToken: null,
     }
@@ -62,17 +69,38 @@ export default function App() {
             Alert.alert('Oops', result, [{ text: 'OK' }])
           } else {
             const accessToken = res.url.split(`users?token=`)[1]
+            await AsyncStorage.setItem('accessToken', accessToken)
             dispatch({ type: 'LOGIN', accessToken });
-            // TODO: save to asyncstorage
           }
         } catch (e) {
           Alert.alert(e.name, e.message, [{ text: 'OK' }])
         }
       },
-      logout: () => dispatch({ type: 'LOGOUT' }),
+      logout: async () => {
+        try {
+          await AsyncStorage.removeItem('accessToken')
+          dispatch({ type: 'LOGOUT' })
+        } catch (e) {
+          Alert.alert(e.name, e.message, [{ text: 'OK' }])
+        }
+      },
     }),
     []
   )
+
+  React.useEffect(() => {
+    const getLocalAccessToken = async () => {
+      let accessToken
+      try {
+        accessToken = await AsyncStorage.getItem('accessToken')
+      } catch (e) {
+        Alert.alert(e.name, e.message, [{ text: 'OK' }])
+      }
+      dispatch({ type: 'SET_TOKEN', accessToken });
+    }
+
+    getLocalAccessToken()
+  }, [])
 
   return (
     <AuthContext.Provider value={authContext}>
@@ -83,7 +111,7 @@ export default function App() {
           <Stack.Navigator>
           {!state.accessToken ? (
             <>
-            <Stack.Screen name="Login" component={LoginScreen}/>
+            <Stack.Screen name="Login" component={() => <LoginScreen isLoading={state.isLoading} />}/>
             <Stack.Screen name="Register" component={RegisterScreen}/>
             </>
           ) : (

@@ -1,11 +1,11 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { View, Text, TextInput, Button } from 'react-native'
 
 import { AuthContext } from '../App'
 
-const LoginScreen = ({ navigation }) => {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+const LoginScreen = ({ navigation, isLoading }) => {
+  const [email, setEmail] = React.useState('')
+  const [password, setPassword] = React.useState('')
 
   const { login } = React.useContext(AuthContext)
 
@@ -17,16 +17,19 @@ const LoginScreen = ({ navigation }) => {
         value={email}
         textContentType='emailAddress'
         keyboardType='email-address'
+        disabled={isLoading}
       />
       <TextInput
         onChangeText={text => setPassword(text)}
         value={password}
         textContentType='password'
         secureTextEntry={true}
+        disabled={isLoading}
       />
       <Button
         title="Login"
         onPress={() => { login({ email, password }) }}
+        disabled={isLoading}
       />
       <Button
         title="Register"
@@ -34,6 +37,7 @@ const LoginScreen = ({ navigation }) => {
         onPress={() => {
           navigation.navigate('Register')
         }}
+        disabled={isLoading}
       />
     </View>
   )
