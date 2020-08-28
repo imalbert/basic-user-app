@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, Text, Button } from 'react-native'
 
-import { AuthContext } from '../App'
+import { AuthContext } from '../context/auth'
 
 const UserScreen = ({ navigation }) => {
   const { logout } = React.useContext(AuthContext)

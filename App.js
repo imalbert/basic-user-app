@@ -3,7 +3,7 @@ import 'react-native-gesture-handler'
 import { StatusBar } from 'expo-status-bar'
 import Constants from 'expo-constants'
 
-import React, { useReducer } from 'react'
+import React from 'react'
 import { StyleSheet, Alert, View } from 'react-native'
 import AsyncStorage from '@react-native-community/async-storage'
 import { NavigationContainer } from '@react-navigation/native'
@@ -14,8 +14,7 @@ import {
   RegisterScreen,
   MainScreen,
 } from './screens'
-
-export const AuthContext = React.createContext()
+import { AuthContext, authUtils } from './context/auth'
 
 const Stack = createStackNavigator()
 export default function App() {
@@ -49,45 +48,6 @@ export default function App() {
     }
   )
 
-  const authContext = React.useMemo(
-    () => ({
-      login: async (loginDetails) => {
-        const options = {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(loginDetails)
-        }
-
-        try {
-          const res = await fetch(`http://192.168.1.158:18999/auth/login`, options)
-          const result = await res.json()
-
-          if (res.status === 401) {
-            Alert.alert('Oops', result, [{ text: 'OK' }])
-          } else {
-            const accessToken = res.url.split(`users?token=`)[1]
-            await AsyncStorage.setItem('accessToken', accessToken)
-            dispatch({ type: 'LOGIN', accessToken });
-          }
-        } catch (e) {
-          Alert.alert(e.name, e.message, [{ text: 'OK' }])
-        }
-      },
-      logout: async () => {
-        try {
-          await AsyncStorage.removeItem('accessToken')
-          dispatch({ type: 'LOGOUT' })
-        } catch (e) {
-          Alert.alert(e.name, e.message, [{ text: 'OK' }])
-        }
-      },
-    }),
-    []
-  )
-
   React.useEffect(() => {
     const getLocalAccessToken = async () => {
       let accessToken
@@ -102,6 +62,8 @@ export default function App() {
     getLocalAccessToken()
   }, [])
 
+  const authContext = React.useMemo(authUtils(dispatch), [])
+
   return (
     <AuthContext.Provider value={authContext}>
       <View style={styles.container}>
@@ -111,7 +73,9 @@ export default function App() {
           <Stack.Navigator>
           {!state.accessToken ? (
             <>
-            <Stack.Screen name="Login" component={() => <LoginScreen isLoading={state.isLoading} />}/>
+            <Stack.Screen name="Login">
+              {() => <LoginScreen isLoading={state.isLoading} />}
+            </Stack.Screen>
             <Stack.Screen name="Register" component={RegisterScreen}/>
             </>
           ) : (
