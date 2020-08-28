@@ -46,7 +46,7 @@ const ListScreen = ({ navigation }) => {
       <FlatList
         data={usersList}
         renderItem={(user) => <UserItem user={user} />}
-        keyExtractor={user => user.email}
+        keyExtractor={(user, index) => `${user.email}${index}`}
       />
     </View>
   )

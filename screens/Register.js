@@ -86,8 +86,8 @@ const RegisterScreen = ({ navigation }) => {
         disabled={isLoading}
       />
       <View style={styles.controls}>
+        <AppButton title="Cancel" onPress={() => navigation.navigate('Login')} color='gray' />
         <AppButton title="Register" onPress={handleRegister} />
-        <AppButton title="Cancel" onPress={() => navigation.navigate('Login')} />
       </View>
     </View>
   )

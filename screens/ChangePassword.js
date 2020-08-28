@@ -33,9 +33,9 @@ const ChangePasswordScreen = ({ navigation }) => {
     try {
       const accessToken = await AsyncStorage.getItem('accessToken')
       const res = await basicUserApi.changePassword(passwordDetails, accessToken)
-      const result = await res.text()
 
       if (res.status >= 400) {
+        const result = await res.json()
         Alert.alert('Oops', result.error, [{ text: 'OK' }])
       } else {
         Alert.alert('Success', `Password has been changed.`, [{ text: 'OK' }])
