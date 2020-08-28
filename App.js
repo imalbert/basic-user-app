@@ -74,7 +74,7 @@ export default function App() {
           {!state.accessToken ? (
             <>
             <Stack.Screen name="Login">
-              {() => <LoginScreen isLoading={state.isLoading} />}
+              {({ navigation }) => <LoginScreen navigation={navigation} isLoading={state.isLoading} />}
             </Stack.Screen>
             <Stack.Screen name="Register" component={RegisterScreen}/>
             </>

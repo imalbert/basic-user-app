@@ -1,6 +1,5 @@
 import React from 'react'
-import { View, Text, TextInput, Button } from 'react-native'
-
+import { Button, Text, TextInput, View } from 'react-native'
 import { AuthContext } from '../context/auth'
 
 const LoginScreen = ({ navigation, isLoading }) => {
