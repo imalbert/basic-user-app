@@ -9,7 +9,7 @@ const UserScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <AppButton onPress={() => logout()} title="logout" />
+      <AppButton color='gray' onPress={() => logout()} title="logout" />
       <AppButton onPress={() => navigation.navigate('ChangePassword')} title="Change password" />
     </View>
   )

@@ -1,7 +1,10 @@
 import React from 'react'
-import { Alert, Button, Text, TextInput, View } from 'react-native'
+import { Alert, StyleSheet, View } from 'react-native'
 
 import basicUserApi from '../api/basicUserApi'
+
+import AppTextInput from '../components/AppTextInput'
+import AppButton from '../components/AppButton'
 
 const RegisterScreen = ({ navigation }) => {
   const [isLoading, setLoading] = React.useState(false)
@@ -49,9 +52,8 @@ const RegisterScreen = ({ navigation }) => {
   }
 
   return (
-    <View>
-      <Text>Register screen</Text>
-      <TextInput
+    <View style={styles.container}>
+      <AppTextInput
         onChangeText={email => dispatch({ type: 'SET_EMAIL', email })}
         value={newUser.email}
         placeholder='email'
@@ -59,7 +61,7 @@ const RegisterScreen = ({ navigation }) => {
         keyboardType='email-address'
         disabled={isLoading}
       />
-      <TextInput
+      <AppTextInput
         onChangeText={password => dispatch({ type: 'SET_PASSWORD', password })}
         placeholder='password'
         value={newUser.password}
@@ -67,7 +69,7 @@ const RegisterScreen = ({ navigation }) => {
         secureTextEntry={true}
         disabled={isLoading}
       />
-      <TextInput
+      <AppTextInput
         onChangeText={first_name => dispatch({ type: 'SET_FIRST_NAME', first_name })}
         placeholder='first name'
         value={newUser.first_name}
@@ -75,7 +77,7 @@ const RegisterScreen = ({ navigation }) => {
         keyboardType='default'
         disabled={isLoading}
       />
-      <TextInput
+      <AppTextInput
         onChangeText={last_name => dispatch({ type: 'SET_LAST_NAME', last_name })}
         placeholder='last name'
         value={newUser.last_name}
@@ -83,10 +85,23 @@ const RegisterScreen = ({ navigation }) => {
         keyboardType='default'
         disabled={isLoading}
       />
-      <Button title="Register" onPress={handleRegister} />
-      <Button title="Cancel" onPress={() => navigation.navigate('Login')} />
+      <View style={styles.controls}>
+        <AppButton title="Register" onPress={handleRegister} />
+        <AppButton title="Cancel" onPress={() => navigation.navigate('Login')} />
+      </View>
     </View>
   )
 }
+
+const styles = StyleSheet.create({
+  container: {
+    marginTop: 30,
+  },
+  controls: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 30,
+  },
+})
 
 export default RegisterScreen

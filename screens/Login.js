@@ -35,6 +35,7 @@ const LoginScreen = ({ navigation, isLoading }) => {
           onPress={() => {
             navigation.navigate('Register')
           }}
+          color='gray'
           disabled={isLoading}
         />
         <AppButton
