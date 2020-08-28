@@ -94,6 +94,7 @@ const styles = StyleSheet.create({
   controls: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    marginTop: 30,
   },
 })
 
