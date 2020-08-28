@@ -1,6 +1,9 @@
 import React from 'react'
-import { Button, Text, TextInput, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import { AuthContext } from '../context/auth'
+
+import AppTextInput from '../components/AppTextInput'
+import AppButton from '../components/AppButton'
 
 const LoginScreen = ({ navigation, isLoading }) => {
   const [email, setEmail] = React.useState('')
@@ -9,37 +12,50 @@ const LoginScreen = ({ navigation, isLoading }) => {
   const { login } = React.useContext(AuthContext)
 
   return (
-    <View>
-      <Text>Basic login</Text>
-      <TextInput
+    <View style={styles.container}>
+      <AppTextInput
         onChangeText={text => setEmail(text)}
+        placeholder='email'
         value={email}
         textContentType='emailAddress'
         keyboardType='email-address'
         disabled={isLoading}
       />
-      <TextInput
+      <AppTextInput
         onChangeText={text => setPassword(text)}
+        placeholder='password'
         value={password}
         textContentType='password'
         secureTextEntry={true}
         disabled={isLoading}
       />
-      <Button
-        title="Login"
-        onPress={() => { login({ email, password }) }}
-        disabled={isLoading}
-      />
-      <Button
-        title="Register"
-        styles={{ backgroundColor: 'transparent' }}
-        onPress={() => {
-          navigation.navigate('Register')
-        }}
-        disabled={isLoading}
-      />
+      <View style={styles.controls}>
+        <AppButton
+          title="Register"
+          onPress={() => {
+            navigation.navigate('Register')
+          }}
+          disabled={isLoading}
+        />
+        <AppButton
+          title="Login"
+          onPress={() => { login({ email, password }) }}
+          disabled={isLoading}
+        />
+      </View>
     </View>
   )
 }
+
+const styles = StyleSheet.create({
+  container: {
+    marginTop: 30,
+  },
+  controls: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 30,
+  },
+})
 
 export default LoginScreen
