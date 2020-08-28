@@ -25,7 +25,11 @@ const basicUserApi = {
       Authorization: `Bearer ${accessToken}`
     },
     body: JSON.stringify({ oldpw, newpw, again })
-  })
+  }),
+  users: (accessToken) => fetch(`${BASIC_USER_API}/api/users/?token=${accessToken}`, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' }
+  }),
 }
 
 export default basicUserApi
