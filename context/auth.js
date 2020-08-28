@@ -2,20 +2,13 @@ import React from 'react'
 import { Alert } from 'react-native'
 import AsyncStorage from '@react-native-community/async-storage'
 
+import basicUserApi from '../api/basicUserApi'
+
 export const AuthContext = React.createContext()
 export const authUtils = (dispatch) => () => ({
   login: async (loginDetails) => {
-    const options = {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(loginDetails)
-    }
-
     try {
-      const res = await fetch(`http://192.168.1.158:18999/auth/login`, options)
+      const res = await basicUserApi.login(loginDetails)
       const result = await res.json()
 
       if (res.status === 401) {
