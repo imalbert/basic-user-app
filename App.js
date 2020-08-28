@@ -3,8 +3,8 @@ import 'react-native-gesture-handler'
 import { StatusBar } from 'expo-status-bar'
 import Constants from 'expo-constants'
 
-import React, { useState } from 'react'
-import { StyleSheet, Text, View, TextInput, Button, } from 'react-native'
+import React, { useReducer } from 'react'
+import { StyleSheet, Alert, View } from 'react-native'
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 
@@ -14,28 +14,84 @@ import {
   MainScreen,
 } from './screens'
 
-const Stack = createStackNavigator()
+export const AuthContext = React.createContext()
 
+const Stack = createStackNavigator()
 export default function App() {
-  const [loggedIn, setLoggedIn] = useState(false)
+  const [state, dispatch] = React.useReducer(
+    (prevState, action) => {
+      switch (action.type) {
+        case 'LOGIN':
+          return {
+            ...prevState,
+            isLoggedOut: false,
+            accessToken: action.accessToken,
+          };
+        case 'LOGOUT':
+          return {
+            ...prevState,
+            isLoggedOut: true,
+            accessToken: null,
+          };
+      }
+    },
+    {
+      isLoading: false,
+      isLoggedOut: false,
+      accessToken: null,
+    }
+  )
+
+  const authContext = React.useMemo(
+    () => ({
+      login: async (loginDetails) => {
+        const options = {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(loginDetails)
+        }
+
+        try {
+          const res = await fetch(`http://192.168.1.158:18999/auth/login`, options)
+          const accessToken = res.url.split(`users?token=`)[1]
+          const result = await res.json()
+          console.log(result)
+          if (res.status === 401) {
+            Alert.alert('Oops', result, [{ text: 'OK' }])
+          }
+          dispatch({ type: 'LOGIN', accessToken });
+          // TODO: save to asyncstorage
+        } catch (e) {
+          // TODO: alert error
+        }
+      },
+      logout: () => dispatch({ type: 'LOGOUT' }),
+    }),
+    []
+  )
 
   return (
-    <View style={styles.container}>
-      <StatusBar style="auto" />
+    <AuthContext.Provider value={authContext}>
+      <View style={styles.container}>
+        <StatusBar style="auto" />
 
-      <NavigationContainer>
-        <Stack.Navigator>
-        {loggedIn ? (
-          <>
-          <Stack.Screen name="Login" component={LoginScreen}/>
-          <Stack.Screen name="Register" component={RegisterScreen}/>
-          </>
-        ) : (
-          <Stack.Screen name="Main" component={MainScreen} options={{ headerShown: false }} />
-        )}
-        </Stack.Navigator>
-      </NavigationContainer>
-    </View>
+        <NavigationContainer>
+          <Stack.Navigator>
+          {!state.accessToken ? (
+            <>
+            <Stack.Screen name="Login" component={LoginScreen}/>
+            <Stack.Screen name="Register" component={RegisterScreen}/>
+            </>
+          ) : (
+            <Stack.Screen name="Main" component={MainScreen} options={{ headerShown: false }} />
+          )}
+          </Stack.Navigator>
+        </NavigationContainer>
+      </View>
+    </AuthContext.Provider>
   )
 }
 
