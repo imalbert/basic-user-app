@@ -5,7 +5,7 @@ const basicUserApi = {
     method: 'POST',
     headers: {
       Accept: 'application/json',
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify({ email, password })
   }),
@@ -13,10 +13,19 @@ const basicUserApi = {
     method: 'POST',
     headers: {
       Accept: 'application/json',
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify({ email, password, ...rest })
   }),
+  changePassword: ({ oldpw, newpw, again }, accessToken) => fetch(`${BASIC_USER_API}/api/users/`, {
+    method: 'PATCH',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${accessToken}`
+    },
+    body: JSON.stringify({ oldpw, newpw, again })
+  })
 }
 
 export default basicUserApi

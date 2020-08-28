@@ -16,8 +16,6 @@ const RegisterScreen = ({ navigation }) => {
           return { ...prevState, first_name: action.first_name }
         case 'SET_LAST_NAME':
           return { ...prevState, last_name: action.last_name }
-        case 'RESET':
-          return {}
       }
     },
     {
