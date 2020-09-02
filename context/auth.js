@@ -9,12 +9,12 @@ export const authUtils = (dispatch) => () => ({
   login: async (loginDetails) => {
     try {
       const res = await basicUserApi.login(loginDetails)
-      const result = await res.json()
 
       if (res.status === 401) {
+        const result = await res.json()
         Alert.alert('Oops', result, [{ text: 'OK' }])
       } else {
-        const accessToken = res.url.split(`users?token=`)[1]
+        const accessToken = await res.text()
         await AsyncStorage.setItem('accessToken', accessToken)
         dispatch({ type: 'LOGIN', accessToken });
       }
